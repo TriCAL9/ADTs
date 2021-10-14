@@ -1,7 +1,8 @@
+import java.util.Objects;
 public class Fraction implements Comparable<Fraction> {
   public enum FractionPart {NUMERATOR, DENOMINATOR}
-  private long numerator
-  private long denominator
+  private long numerator;
+  private long denominator;
   
   /**
   *The constructor creates the Fraction object and initializes the num and denom
@@ -32,11 +33,11 @@ public class Fraction implements Comparable<Fraction> {
       assert(this.denominator != 0);
     }
 
-  public int getNumerator() {
+  public long getNumerator() {
     return this.numerator;
   }
   
-  public int getDenominator() {
+  public long getDenominator() {
     return this.denominator;
   }
 
@@ -68,24 +69,37 @@ public class Fraction implements Comparable<Fraction> {
   */
     public Fraction plus(Fraction addend) {
       //check precondition
-      Objects.requireNonNull(addend, "null Fraction can't be be added;
-      precondition failed");
-      int[][] aPartOfFractions =
-        FractionPartsUtil.seperateIntoParts(this,addend);
+      Objects.requireNonNull(addend, "null Fraction can't be be added; precondition failed");
+      long[][] aPartOfFractions = new long[2][2];
+      aPartOfFractions = FractionPartsUtil.seperateIntoParts(this,addend);
       int numerator = FractionPart.NUMERATOR.ordinal();
       int denominator = FractionPart.DENOMINATOR.ordinal();
-      int sizeOfNumerator = Long.valueOf(aPartOfFractions[0]
-        [numerator.value()]).bitCount();
-      int sizeOfDenominator = Long.valueOf(aPartOfFractions[0]
-        [denominator.value()]).bitCount();
       
-      System.out.printf("numberator's size %d and denominator's size %d  before
-        addition \n" ,  sizeOfNumerator, sizeOfDenominator);
+      int sizeOfNumerator = Long.bitCount(aPartOfFractions[0][numerator]);
+      int sizeOfDenominator = Long.bitCount(aPartOfFractions[0][denominator]);
+      
+      System.out.printf("numberator's size %d and denominator's size %d  before addition \n" ,  sizeOfNumerator, sizeOfDenominator);
       
       if((sizeOfNumerator < Integer.SIZE) && (sizeOfDenominator < Integer.SIZE)) {
 
-        long sumONumerators = add(aPartOfFractions[0][numerator],
+        //assign to sumOfNums add(myNum, otherNum)
+        long sumOfNumerators = FractionPartsUtil.add(aPartOfFractions[0][numerator],
           aPartOfFractions[1][numerator]);
+        assert(Long.SIZE > Long.bitCount(sumOfNumerators));
+              
+        //assign to lcm the return value from   FractionPair method lcm(this.num,
+        //otherNum)/gcd(this.denom, otherDenom)
+         System.out.println(aPartOfFractions[1][denominator]);
+        long lcm = FractionPartsUtil.lowestCommonMultiple(aPartOfFractions[0]
+        [numerator], aPartOfFractions[1][numerator]) / 
+          FractionPartsUtil.highestCommonFactor(aPartOfFractions[0]
+            [denominator], aPartOfFractions[1][denominator]);
+            
+        //create a new function that has as the num sumOfNums and as denom lcm 
+    
+        Fraction result = new Fraction( sumOfNumerators, lcm );
+        //and return this new fraction
+        return result;
       }
       else {    
       
@@ -93,22 +107,10 @@ public class Fraction implements Comparable<Fraction> {
         
       }
       
-      //assign to sumOfNums add(myNum, otherNum)
-      assert(Long.SIZE > Long.valueOf(sumOfNums).bitCount());
-      //assign to lcm the return value from   FractionPair method lcm(this.num,
-      //otherNum)/gcd(this.denom, otherDenom)
-      long lcm = FractionPartsUtil.lowestCommonMultiple(aPartOfFractions[0]
-        [numerator], aPartOfFractions[1][numerator]) / 
-          FractionPartsUtil.highestCommonDivisor(aPartOfFractions[0]
-            [denominator], aPartOfFractions[1][denominator]);
+
+
+
       
-    
-      Fraction result = new Fraction( sumOfNumerators, lcm );
-      
-      
-      //create a new function that has as the num sumOfNums and as denom lcm 
-      //and return this new fraction
-      return result;
     }
 
 
@@ -124,46 +126,42 @@ public class Fraction implements Comparable<Fraction> {
   *@return Fraction the difference between this and the subtranend
   */
     public Fraction minus(Fraction subtranend) {
-      Objects.requireNonNull(subtranend, "null Fraction can't be be added;
-      precondition failed");
-      int[][] aPartOfFractions = FractionPartsUtil.seperateIntoParts(this,
+      Objects.requireNonNull(subtranend, "null Fraction can't be be added; precondition failed");
+      long[][] aPartOfFractions = FractionPartsUtil.seperateIntoParts(this,
         subtranend);
       int numerator = FractionPart.NUMERATOR.ordinal();
       int denominator = FractionPart.DENOMINATOR.ordinal();
-      int sizeOfNumerator = Long.valueOf(aPartOfFractions[0]
-        [numerator]).bitCount();
-      int sizeOfDenominator = Long.valueOf(aPartOfFractions[0]
-      [denominator]).bitCount();
+      int sizeOfNumerator = Long.bitCount(aPartOfFractions[0]
+        [numerator]);
+      int sizeOfDenominator = Long.bitCount(aPartOfFractions[0]
+      [denominator]);
       
-      System.out.printf("numberator's size %d and denominator's size %d  before
-      subtraction \n" ,  sizeOfNumerator, sizeOfDenominator);
-      if((sizeOfNumerator < Integer.SIZE) && (sizeOfDenominator < Integer.SIZE))
-      {
+      System.out.printf("numberator's size %d and denominator's size %d  before subtraction \n" ,  sizeOfNumerator,     
+        sizeOfDenominator);
+      if((sizeOfNumerator < Integer.SIZE) && (sizeOfDenominator < Integer.SIZE)) {
 
-        long differenceONumerators = subtract(aPartOfFractions[0][numerator],
-        aPartOfFractions[1][numerator]);
-        
-      }
-      else {    
-      
-        throw new IllegalArgumentException(); 
-        
-      }
-      
-      //assign to sumOfNums add(myNum, otherNum)
-      assert(Long.SIZE > Long.valueOf(sumOfNums).bitCount());
+        long differenceOfNumerators = FractionPartsUtil.subtract(aPartOfFractions[0][numerator], aPartOfFractions[1][numerator]);
+        assert(Long.SIZE > Long.bitCount(differenceOfNumerators));
+        //assign to sumOfNums add(myNum, otherNum)
+
       
       //assign to lcm the return value from   FractionPair method lcm(this.num,
       //otherNum)/gcd(this.denom, otherDenom)
-      long lcm = FractionPartsUtil.lowestCommonMultiple(aPartOfFractions[0
+      long lcm = FractionPartsUtil.lowestCommonMultiple(aPartOfFractions[0]
         [numerator], aPartOfFractions[1][numerator]) /
-        FractionPartsUtil.highestCommonDivisor(aPartOfFractions[0][denominator],
+        FractionPartsUtil.highestCommonFactor(aPartOfFractions[0][denominator],
             aPartOfFractions[1][denominator]);
       //assign to difference the result from subtract(this.num, otherNum)
       Fraction result = new Fraction( differenceOfNumerators, lcm );
       //create a new fraction with the difference between numerators and the lcm
       //of the denominator
       return result;
+      }
+      else {    
+      
+        throw new IllegalArgumentException(); 
+        
+      }
     }
     
     
@@ -177,22 +175,22 @@ public class Fraction implements Comparable<Fraction> {
   *@returns Fraction the product of it and its operand
   */
     public Fraction times(Fraction operand) {
-      Objects.requireNonNull(operand, "operand is a should not be a null Fraction")
-      Fraction product = new Fraction(FractionPartsUtil.multiply(this.num,
-      fraction.num), FractionPartsUtil.multiply(this.denom, fraction.denom));
+      Objects.requireNonNull(operand, "operand is a should not be a null Fraction");
+      Fraction product = new Fraction(FractionPartsUtil.multiply(this.numerator, operand.numerator), 
+      FractionPartsUtil.multiply(this.denominator, operand.denominator));
      //check postcondition
-     assert(product.getDenom() != 0);
+     assert(product.getDenominator() != 0);
      //assert that product.denom > Long.asLong(this.denom()).bitCount() && product.num > Long.asLong(this.num).bitCount()
-     assert (product.getDenominator() > Long.asLong(this.getDenominator()).bitCount() && product.getNumerator() >
-     Long.asLong(this.getnNumerator()).bitCount());
+     assert (product.getDenominator() > Long.bitCount(this.getDenominator()) && product.getNumerator() >
+     Long.bitCount(this.getNumerator()));
      return product;
     }  
 
     public int compareTo(Fraction f){
-      long numerator = f.getNum();
-      long denominator = f.getDenom();
-      return (Long.compare(this.num, numerator) == 0 &&
-      Long.compare(this.denom, denominator) == 0) ? 0 : 1;
+      long numerator = f.getNumerator();
+      long denominator = f.getDenominator();
+      return (Long.compare(this.numerator, numerator) == 0 &&
+      Long.compare(this.denominator, denominator) == 0) ? 0 : 1;
     }
     
   /**
@@ -205,6 +203,6 @@ public class Fraction implements Comparable<Fraction> {
     @Override
     public String toString() {
       return "Class name : " + this.getClass().getName() + ", long num = [" +
-      getNum() + "], long denom = [" + getDenom() + "].";
+      getNumerator() + "], long denom = [" + getDenominator() + "].";
     }
 }
