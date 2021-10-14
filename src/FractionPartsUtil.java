@@ -1,14 +1,14 @@
 public class FractionPartsUtil {
 
     private FractionPartsUtil(){
-        throws new AssertionError();
+        throw new AssertionError();
     }
     
     public static long lowestCommonMultiple(long a, long b) {
         return (long) Math.abs(a * b) / highestCommonFactor(a, b);
     } 
 
-    public long highestCommonFactor(long a, long b) {
+    public static long highestCommonFactor(long a, long b) {
         while(b !=0) {
             long r = b;
             b = mod(a, b);
@@ -27,9 +27,9 @@ public class FractionPartsUtil {
         return a * b;
     }
     public static long[][] seperateIntoParts(Fraction a, Fraction b) {
-        int[][] result = {{a.getNum(), b.getNum()}, {a.getDenom(), b.getDenom()}};
-        assert(result[0][0]  == a.getNum());
-        assert(result[1][1] == b.getDenom());
+        long[][] result = {{a.getNumerator(), a.getDenominator()}, {b.getNumerator(), b.getDenominator()}};
+        assert(result[0][0]  == a.getNumerator());
+        assert(result[1][1] == b.getDenominator());
         return result;
         
     }
