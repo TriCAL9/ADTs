@@ -1,179 +1,190 @@
+package fraction;
+
 import java.util.Objects;
+import static fraction.FractionPartsUtil.lowestCommonMultiple;
+
+/**
+* Fraction class is an ADT that holds two values a numerator and a denominator.
+* Fraction can throw a an IllegalArgumentException when the denominator is zero or if either the 
+* numerator or denominator gets larger than an integer after performing an operation.
+* The Fraction can be added to another Fraction or subtracted from another Fraction. 
+* A multiply operation is multiplies Fractions together. 
+*/
 
 public class Fraction implements Comparable<Fraction> {
-    private final long numerator;
-    private final long denominator;
+  public enum FractionPart {NUMERATOR, DENOMINATOR}
+  public static final Fraction ONE = Fraction.valueOf(1,1);
+  public static final Fraction ONE_HALF = Fraction.valueOf(1,2);
+  public static final Fraction ONE_QUARTER = Fraction.valueOf(1,4);
+  public static final Fraction ONE_THIRD = Fraction.valueOf(1,3);
+  private long numerator;
+  private long denominator;
+  
+  /**
+  * The constructor creates the Fraction object and initializes the num and denom instance fields. 
+  * The constructor is private and can only be instantiated through the static factory method valueOf. 
+  * Arithmetic operations require that the size of the Fraction passed as an arguments to its methods have thier
+  * parts (num and denom be the size of an int primitive) but the constructor and static factory can take a num
+  * and denom that are the size of a long primitive.
+  * Precondition:  denominator != 0
+  * Postcondition: denominator != 0
+  * @param long numerator of fraction
+  * @param long denominator of fraction
+  * @throws IllegalArgumentException
+  */
+    private Fraction(long numerator, long denominator) {    
 
-    /**
-     * The constructor creates the Fraction object and initializes the num and denom
-     * instance fields.
-     * The constructor is private and can only be instantiated through the static
-     * factory method valueOf. Arithmetic operations require that the size of the
-     * Fraction's parts (num and denom be the size of an int primitive) but the
-     * constructor and static factory can take a num and denom that are the size of a
-     * primitive long.
-     * Precondition: -2^<= 63 num <= 2^63 -1 && -2^63 <= denom <= 2^63 -1 && denom != 0
-     * Postcondition: -2^<= 63 this.num <= 2^62 -1 && -2^63 <= this.denom <= 2^63 -1 &&
-     * this.denom != 0
-     *
-     * @param numerator   numerator of fraction
-     * @param denominator denominator of fraction
-     * @throws IllegalArgumentException if the denominator is zero
-     */
-    private Fraction(long numerator, long denominator) {
-        // check precondition
-        if (denominator != 0) {
-            this.numerator = numerator;
-            this.denominator = denominator;
-        } else {
-            throw new IllegalArgumentException("Fraction undefined");
-        }
+      if(denominator != 0) {
+      // initialize variables in the constructor
+        this.numerator = numerator;
+        this.denominator =  denominator;
+      }
+      else {
+        throw new IllegalArgumentException("Fraction undefined");
+      }
+      // check postcondition
+      assert(this.denominator != 0);
     }
 
-    /**
-     * The valueOf static factory method creates a Fraction with the values for the
-     * fraction's numerator and denominator.
-     * precondition:  -2^31 <= num <= 2^31 -1 && -2^31 <= denom <= 2^31 -1 && denom != 0
-     * postcondition:
-     *
-     * @param num   the numerator of the fraction
-     * @param denom denominator of the fraction
-     * @return Fraction
-     */
+  public long getNumerator() {
+    return this.numerator;
+  }
+  
+  public long getDenominator() {
+    return this.denominator;
+  }
+
+  /**
+  * The valueOf static factory method creates a Fraction with the values for the 
+  * fraction's numerator and denominator. 
+  * precondition:  -2^31 <= num <= 2^31 -1 && -2^31 <= denom <= 2^31 -1 && denom !=0 
+  * postcondition: 
+  * @param int the numerator of the fraction
+  * @param int denominator of the fraction 
+  * @return Fraction 
+  */
     public static Fraction valueOf(int num, int denom) {
-        if (denom != 0) {
-            return new Fraction(num, denom);
-        } else {
-            throw new IllegalArgumentException();
-        }
+      if(denom != 0) {
+        return new Fraction(num, denom);
+      }
+      else {
+         throw new IllegalArgumentException();
+      }
     }
-
-    public long getNumerator() {
-        return this.numerator;
-    }
-
-    public long getDenominator() {
-        return this.denominator;
-    }
-
-    /**
-     * This Fraction adds to itself to another fraction.
-     * precondition: addend != null && (-2^31 < this.num < 2^31 -1 &&
-     * -2^31 < this.denom < 2^31-1)
-     * postcondition: (-2^<= 63 result.num <= 2^63 -1) &&
-     * (-2^63 <= result.denom <= 2^63 -1) && result.denom != 0
-     *
-     * @param addend addend is the numeric operand
-     * @return Fraction
-     */
+  
+  /**
+  * Plus adds this Fraction to another fraction.
+  * precondition: addend != null && (-2^31 < this.num < 2^31 -1 &&
+  * -2^31 < this.denom < 2^31-1)
+  * postcondition: (-2^<= 63 result.num <= 2^63 -1) &&
+  * (-2^63 <= result.denom <= 2^63 -1) && result.denom != 0
+  * @param Fraction addend is the numeric operand to be added
+  * @return Fraction 
+  */
     public Fraction plus(Fraction addend) {
-        //check precondition
-        Objects.requireNonNull(addend, "null Fraction can't be be added; precondition failed");
-        long[][] aPartOfFractions = FractionPartsUtil.seperateIntoParts(this, addend);
-        int numerator = FractionPart.NUMERATOR.ordinal();
-        int denominator = FractionPart.DENOMINATOR.ordinal();
-        int sizeOfNumerator = Long.bitCount(aPartOfFractions[0][numerator]);
-        int sizeOfDenominator = Long.bitCount(aPartOfFractions[0][denominator]);
+      
+      int sizeOfNumerator = Long.bitCount(this.getNumerator());
+      int sizeOfDenominator = Long.bitCount(this.getDenominator());
+      
+      if((sizeOfNumerator > Integer.SIZE) && (sizeOfDenominator > Integer.SIZE))
+        throw new IllegalArgumentException(); 
+     
+     Fraction result;
+     long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
+     System.out.println(lcm);
+     if(this.getDenominator() < addend.getDenominator()) 
+       result = this.times(identity(lcm/this.getDenominator())).plus(addend);
+     else if (this.getDenominator() > addend.getDenominator())
+       result = this.plus(addend.times(identity(lcm/addend.getDenominator())));
+     else
+       result =  new Fraction(FractionPartsUtil.add(this.getNumerator(), addend.getNumerator())
+       , this.getDenominator()).simplify();
 
-        System.out.printf("numberator's size %d and denominator's size %d  before addition \n", sizeOfNumerator, sizeOfDenominator);
+      return result;
+      }
 
-        if ((sizeOfNumerator < Integer.SIZE) && (sizeOfDenominator < Integer.SIZE)) {
-            long sumOfNumerators = FractionPartsUtil.add(aPartOfFractions[0][numerator],
-                    aPartOfFractions[1][numerator]);
-            assert (Long.SIZE > Long.bitCount(sumOfNumerators));
-            System.out.println(aPartOfFractions[1][denominator]);
-            long lcm = FractionPartsUtil.lowestCommonMultiple(aPartOfFractions[0]
-                    [numerator], aPartOfFractions[1][numerator]) /
-                    FractionPartsUtil.highestCommonFactor(aPartOfFractions[0]
-                            [denominator], aPartOfFractions[1][denominator]);
 
-            //create a new function that has as the num sumOfNums and as denom lcm
-            return new Fraction(sumOfNumerators, lcm);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * Minus subtracts another fraction from this fraction.
-     * precondtion: subtranend != null && (-2^31 <= this.num <= 2^31 -1 && -2^*31 <=
-     * this.denom <= 2^31-1)
-     * postcondition: (-2^<= 63 result.num <= 2^63 -1) && (-2^63 <= result.denom <=
-     * 2^63 -1) && result.denom != 0
-     *
-     * @param subtranend the operand of the minus operation
-     * @return Fraction the difference between this and the subtranend
-     * @throws IllegalArgumentException for an argument that is bigger than an integer's
-     *                                  max size or smaller than an integer's min size.
-     * @throws NullPointerException     for the operand of value type null
-     */
+  /** 
+  * Minus subtracts another fraction from this fraction.  
+  * precondtion: subtranend != null && (-2^63 <= this.num <= 2^64 -1 && -2^*63 <=
+  * this.denom <= 2^64) 
+  * postcondition: (-2^<= 63 result.num <= 2^63 -1) && (-2^63 <= result.denom <=
+  * 2^64) && result.denom != 0
+  * @param Fraction the operand of the minus operation
+  * @throws IllegalArgumentException for an argument that is bigger than an integer's
+  * max size or smaller than an integer's min size. 
+  * @throws NullPointerExceptionfor the operand of value type null
+  * @return Fraction the difference between this and the subtranend
+  */
     public Fraction minus(Fraction subtranend) {
-        Objects.requireNonNull(subtranend, "null Fraction can't be be added; precondition failed");
-        long[][] aPartOfFractions = FractionPartsUtil.seperateIntoParts(this,
-                subtranend);
-        int numerator = FractionPart.NUMERATOR.ordinal();
-        int denominator = FractionPart.DENOMINATOR.ordinal();
-        int sizeOfNumerator = Long.bitCount(aPartOfFractions[0]
-                [numerator]);
-        int sizeOfDenominator = Long.bitCount(aPartOfFractions[0]
-                [denominator]);
-
-        System.out.printf("numberator's size %d and denominator's size %d  before subtraction \n", sizeOfNumerator,
-                sizeOfDenominator);
-        if ((sizeOfNumerator < Integer.SIZE) && (sizeOfDenominator < Integer.SIZE)) {
-            long differenceOfNumerators = FractionPartsUtil.subtract(aPartOfFractions[0][numerator], aPartOfFractions[1][numerator]);
-            assert (Long.SIZE > Long.bitCount(differenceOfNumerators));
-            long lcm = FractionPartsUtil.lowestCommonMultiple(aPartOfFractions[0]
-                    [numerator], aPartOfFractions[1][numerator]) /
-                    FractionPartsUtil.highestCommonFactor(aPartOfFractions[0][denominator],
-                            aPartOfFractions[1][denominator]);
-            return new Fraction(differenceOfNumerators, lcm);
-        } else {
-            throw new IllegalArgumentException();
-        }
+      Objects.requireNonNull(subtranend, "fraction must be non-null")
+      int sizeOfNumerator = Long.bitCount(this.getNumerator());
+      int sizeOfDenominator = Long.bitCount(this.getDenominator());
+      
+      if((sizeOfNumerator > Integer.SIZE) && (sizeOfDenominator > Integer.SIZE))
+        throw new IllegalArgumentException(); 
+        
+        return this.plus(subtranend.times(new Fraction(-1,1))).simplify();
     }
-
+    
     /**
-     * This Fraction multiplies itself to another fraction when this method is
-     * called with a non null fraction otherwise a NullPointerException is thrown.
-     * precondition: fraction != null && operand != null && (-2^31 <= this.num <= 2^31
-     * -1 *&& -2^*31 <= this.denom <= 2^31 -1)
-     * postcondition: (-2^<= 63 result.num <= 2^63 -1) && (-2^63 <= result.denom <=
-     * 2^63 *-1) && result.denom != 0
-     *
-     * @param operand operand to be multiplied by this fraction
-     * @return Fraction the product of it and its operand
-     */
+    * Finds the identity Fraction of a number.
+    * precondition:
+    * postcondition:
+    * @param long aNumber
+    * @return Fraction identity
+    */
+    private static Fraction identity(long aNumber) {
+      Fraction identity = new Fraction(aNumber, aNumber);
+      return identity;
+    }
+    
+    /**
+    *
+    */
+    private Fraction simplify() {
+       long hcf = FractionPartsUtil.highestCommonFactor(numerator, denominator);
+       return new Fraction(this.getNumerator()/hcf, this.getDenominator()/hcf);
+    }
+    
+  /**
+  * This Fraction multiplies itself to another fraction when this method is
+  * called with a non null fraction otherwise a NullPointerException is thrown.
+  * precondition: fraction != null && operand != null && (-2^31 <= this.num <= 2^31
+  * -1 *&& -2^*31 <= this.denom <= 2^31 -1)
+  * postcondition: (-2^<= 63 result.num <= 2^63 -1) && (-2^63 <= result.denom <=
+  * 2^63 *-1) && result.denom != 0
+  * @param Fraction operand to be multiplied by this fraction
+  * @return Fraction the product of it and its operand
+  */
     public Fraction times(Fraction operand) {
-        Objects.requireNonNull(operand, "operand is a should not be a null Fraction");
-        Fraction product = new Fraction(FractionPartsUtil.multiply(this.numerator, operand.numerator),
-                FractionPartsUtil.multiply(this.denominator, operand.denominator));
-        //check postcondition
-        assert product.getDenominator() != 0;
-        assert product.getDenominator() > Long.bitCount(this.getDenominator()) && product.getNumerator() >
-                Long.bitCount(this.getNumerator());
-        return product;
+      Objects.requireNonNull(operand, "operand is a should not be a null Fraction");
+      Fraction product = new Fraction(FractionPartsUtil.multiply(this.numerator, operand.numerator), 
+      FractionPartsUtil.multiply(this.denominator, operand.denominator));
+     return product;
+    }  
+    
+  /**
+  * Compares a Fraction with another Fraction checking whether they are equal Fractions
+  * @param Fraction other
+  * @return int 0 if true and 1 if false
+  */
+    @Override
+    public int compareTo(Fraction other){
+      long numerator = other.getNumerator();
+      long denominator = other.getDenominator();
+      return (Long.compare(this.numerator, numerator) == 0 &&
+      Long.compare(this.denominator, denominator) == 0) ? 0 : 1;
     }
-
-    public int compareTo(Fraction f) {
-        long numerator = f.getNumerator();
-        long denominator = f.getDenominator();
-        return this.numerator == numerator &&
-                this.denominator == denominator ? 0 : 1;
-    }
-
-    /**
-     * This is a String representation of a Fraction with no concrete specified
-     * format.
-     * The current String representation of Fraction reflects this pattern, as of
-     * current version:
-     * Class name : Fraction, long num = [aNumerator], long denom = [aDenominator].
-     */
+    
+  /**
+  * The toString string representation of a Fraction with no concrete specified format.
+  * The current String representation of Fraction reflects this pattern, as of current version:
+  * Class name : Fraction, long numerator = [aNumerator], long denominator = [aDenominator].
+  */
     @Override
     public String toString() {
-        return "Class name : " + this.getClass().getName() + ", long num = [" +
-                getNumerator() + "], long denom = [" + getDenominator() + "].";
+      return "Class name : " + this.getClass().getName() + ", long numerator = [" +
+      getNumerator() + "], long denominator = [" + getDenominator() + "].";
     }
-
-    public enum FractionPart {NUMERATOR, DENOMINATOR}
 }

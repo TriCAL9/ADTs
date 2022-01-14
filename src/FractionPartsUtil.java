@@ -1,3 +1,7 @@
+package fraction;
+
+import fraction.Fraction;
+
 public class FractionPartsUtil {
 
     private FractionPartsUtil(){
@@ -5,7 +9,7 @@ public class FractionPartsUtil {
     }
     
     public static long lowestCommonMultiple(long a, long b) {
-        return Math.abs(a * b) / highestCommonFactor(a, b);
+        return (long) Math.abs(a * b) / highestCommonFactor(a, b);
     } 
 
     public static long highestCommonFactor(long a, long b) {
@@ -20,22 +24,17 @@ public class FractionPartsUtil {
     public static long add(long a, long b) {
         return a + b;
     }    
-
+    
     public static long mod(long a, long b) {
         return a % b;
     }
-
     public static long multiply(long a, long b) {
         return a * b;
     }
-
     public static long[][] seperateIntoParts(Fraction a, Fraction b) {
-        long[][] result = {{a.getNumerator(), a.getDenominator()}, {b.getNumerator(), b.getDenominator()}};
-        assert(result[0][0]  == a.getNumerator());
-        assert(result[1][1] == b.getDenominator());
-        return result;
+        return {{a.getNumerator(), a.getDenominator()}, {b.getNumerator(), b.getDenominator()}};
+        
     }
-
     public static long subtract(long a, long b) {
         return a - b;
     }
