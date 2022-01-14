@@ -42,8 +42,6 @@ public class Fraction implements Comparable<Fraction> {
       else {
         throw new IllegalArgumentException("Fraction undefined");
       }
-      // check postcondition
-      assert(this.denominator != 0);
     }
 
   public long getNumerator() {
@@ -74,34 +72,25 @@ public class Fraction implements Comparable<Fraction> {
   
   /**
   * Plus adds this Fraction to another fraction.
-  * precondition: addend != null && (-2^31 < this.num < 2^31 -1 &&
-  * -2^31 < this.denom < 2^31-1)
+  * precondition: addend != null && (-2^31 < this.num < 2^32 &&
+  * -2^31 < this.denom < 2^32)
   * postcondition: (-2^<= 63 result.num <= 2^63 -1) &&
   * (-2^63 <= result.denom <= 2^63 -1) && result.denom != 0
   * @param Fraction addend is the numeric operand to be added
   * @return Fraction 
   */
     public Fraction plus(Fraction addend) {
+      long[][] fracPair = FractionPartsUtil.seperateIntoParts(this, addend);
       
-      int sizeOfNumerator = Long.bitCount(this.getNumerator());
-      int sizeOfDenominator = Long.bitCount(this.getDenominator());
+      int sizeOfNumerator = Long.bitCount(fracPair[0][0]);
+      int sizeOfDenominator = Long.bitCount(fracPair[0][1]);
+      
       
       if((sizeOfNumerator > Integer.SIZE) && (sizeOfDenominator > Integer.SIZE))
         throw new IllegalArgumentException(); 
-     
-     Fraction result;
-     long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
-     System.out.println(lcm);
-     if(this.getDenominator() < addend.getDenominator()) 
-       result = this.times(identity(lcm/this.getDenominator())).plus(addend);
-     else if (this.getDenominator() > addend.getDenominator())
-       result = this.plus(addend.times(identity(lcm/addend.getDenominator())));
-     else
-       result =  new Fraction(FractionPartsUtil.add(this.getNumerator(), addend.getNumerator())
-       , this.getDenominator()).simplify();
-
-      return result;
-      }
+      long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
+      return new Fraction(fracPair[0][0]*(lcm/fracPair[0][1]) + fracPair[1][0]*(lcm/fracPair[1][1]) ,lcm).simplify();
+    }
 
 
   /** 
