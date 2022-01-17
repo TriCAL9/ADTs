@@ -78,7 +78,7 @@ public class Fraction implements Comparable<Fraction> {
   * @throws ArithmeticException if the result overflows a long value for either denominator or numerator
   * @return Fraction 
   */
-    public Fraction plus(Fraction addend) throws ArithmeticException{
+    public Fraction plus(Fraction addend) throws ArithmeticException {
       Objects.requireNonNull(addend, "This fraction cannot be added to a null Fraction");
       long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
       System.out.println(lcm);
@@ -105,7 +105,7 @@ public class Fraction implements Comparable<Fraction> {
   * long value max size
   * @return Fraction the difference between this and the subtranend
   */
-    public Fraction minus(Fraction subtranend) throws ArithmeticException, NullPointerException {
+    public Fraction minus(Fraction subtranend) throws ArithmeticException {
       Objects.requireNonNull(subtranend, "fraction must be non-null");
         
        return this.plus(subtranend.times(new Fraction(-1,1)));
