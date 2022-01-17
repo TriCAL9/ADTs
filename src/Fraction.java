@@ -62,7 +62,6 @@ public class Fraction implements Comparable<Fraction> {
   * @param int denominator of the fraction 
   * @return Fraction 
   */
- 
     public static Fraction valueOf(int num, int denom) throws UndefinedFractionException {
       Fraction fraction = new Fraction(num, denom);
       return fraction; 
@@ -81,36 +80,20 @@ public class Fraction implements Comparable<Fraction> {
   * @return Fraction 
   */
     public Fraction plus(Fraction addend) throws ArithmeticException{
-     
-     
-     long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
-     System.out.println(lcm);
-     
-     Fraction result = this.times(identity(lcm/this.getDenominator()))
-      .plus(addend.times(identity(lcm/addend.getDenominator())));
-
-     return result;
-   }
-
-  /**
-  * Plus adds this Fraction to another fraction.
-  * precondition: addend != null && (-2^31 < this.num < 2^32 &&
-  * -2^31 < this.denom < 2^32)
-  * postcondition: (-2^<= 63 result.num <= 2^64) &&
-  * (-2^63 <= result.denom <= 2^64) && result.denom != 0 and the result is the sum of this fraction and the addend
-  * @param Fraction addend is the numeric operand to be added
-  * @throws ArithmeticException if the result overflows a long value for either denominator or numerator
-  * @throws  NullPointerException if Fraction parameter addend is null
-  * @return Fraction 
-  *
-    public Fraction plus(Fraction addend) throws ArithmeticException, NullPointerException {
-      Objects.requireNonNull(addend, "null value given as parameter to method");
-      long[][] fracPair = FractionPartsUtil.seperateIntoParts(this, addend);
+      Objects.requireNonNull(addend, "This fraction cannot be added to a null Fraction");
       long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
-      Fraction sum = new Fraction(StrictMath.addExact(fracPair[0][0]*(lcm/fracPair[0][1]) , fracPair[1][0]*(lcm/fracPair[1][1])) , lcm).simplify();
-      return sum;
+      System.out.println(lcm);
+      Fraction result;
+      if (denominator == addend.getDenominator()) {
+        long sum  = FractionPartsUtil.add(numerator, addend.getNumerator());
+        result = new Fraction(sum, denominator);
+      }
+      else {
+        result = this.times(identity(lcm/this.getDenominator()))
+          .plus(addend.times(identity(lcm/addend.getDenominator())));
+      }
+      return result;
     }
-    */
 
   /** 
   * Minus subtracts another fraction from this fraction.  
@@ -127,7 +110,7 @@ public class Fraction implements Comparable<Fraction> {
     public Fraction minus(Fraction subtranend) throws ArithmeticException, NullPointerException {
       Objects.requireNonNull(subtranend, "fraction must be non-null");
         
-       return this.plus(subtranend.times(new Fraction(-1,1))).simplify();
+       return this.plus(subtranend.times(new Fraction(-1,1)));
     }
     
     /**
