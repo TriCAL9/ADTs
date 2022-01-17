@@ -76,7 +76,6 @@ public class Fraction implements Comparable<Fraction> {
   * fraction and the addend
   * @param Fraction addend is the numeric operand to be added
   * @throws ArithmeticException if the result overflows a long value for either denominator or numerator
-  * @throws NullPointerException if the parameter addend is a null value
   * @return Fraction 
   */
     public Fraction plus(Fraction addend) throws ArithmeticException{
@@ -102,9 +101,8 @@ public class Fraction implements Comparable<Fraction> {
   * postcondition: (-2^<= 63 result.numerator <= 2^64) && (-2^63 <= result.denominator <=
   * 2^64) && result.denom != 0 and the result is the difference between this fraction and subtranend
   * @param Fraction the operand of the minus operation
-  * @throws ArithmeticException if the numerator or denominator of the difference is greater than the  long value
-  * max size
-  * @throws NullPointerExceptionfor the operand of value type null
+  * @throws ArithmeticException if the numerator or denominator of the difference is greater than the  
+  * long value max size
   * @return Fraction the difference between this and the subtranend
   */
     public Fraction minus(Fraction subtranend) throws ArithmeticException, NullPointerException {
@@ -113,26 +111,27 @@ public class Fraction implements Comparable<Fraction> {
        return this.plus(subtranend.times(new Fraction(-1,1)));
     }
     
-    /**
-    * Finds the identity Fraction of a number.
-    * precondition: The calling method provides a number, that is a long
-    * postcondition: The method returns a fraction that if multiplied by another Fraction would be simplified into 
-    * the original fraction
-    * @param long aNumber
-    * @return Fraction identity
-    */
-    private static Fraction identity(long aNumber) {
-      Fraction identity = new Fraction(aNumber, aNumber);
-      return identity;
-    }
-    
-    /**
-    *
-    */
-    public Fraction simplify() {
-       long hcf = FractionPartsUtil.highestCommonFactor(numerator, denominator);
-       return new Fraction(this.getNumerator()/hcf, this.getDenominator()/hcf);
-    }
+  /**
+  * Finds the identity Fraction of a number.
+  * precondition: The calling method provides a number, that is a long
+  * postcondition: The method returns a fraction that if multiplied by another Fraction would be 
+  * simplified into 
+  * the original fraction
+  * @param long aNumber
+  * @return Fraction identity
+  */
+  private static Fraction identity(long aNumber) {
+    Fraction identity = new Fraction(aNumber, aNumber);
+    return identity;
+  }
+  
+  /**
+  *
+  */
+  public Fraction simplify() {
+     long hcf = FractionPartsUtil.highestCommonFactor(numerator, denominator);
+     return new Fraction(this.getNumerator()/hcf, this.getDenominator()/hcf);
+  }
     
   /**
   * This Fraction multiplies itself to another fraction when this method is
@@ -143,7 +142,6 @@ public class Fraction implements Comparable<Fraction> {
   * 2^63 *-1) && result.denom != 0
   * @param Fraction operand to be multiplied by this fraction
   * @throws ArithmeticException if the result overflows a long value for either denominator or numerator
-  * @throws NullPointerException if the parameter operamd is a null Fraction);
   * @return Fraction the product of it and its operand
   */
     public Fraction times(Fraction operand) {
