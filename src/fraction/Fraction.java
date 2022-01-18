@@ -5,7 +5,7 @@ import static fraction.FractionPartsUtil.lowestCommonMultiple;
 
 /**
 * Fraction class is an ADT that holds two values a numerator and a denominator.
-* Fraction can throw a an IllegalArgumentException when the denominator is zero or if either the 
+* Fraction can throw an IllegalArgumentException when the denominator is zero or if either the 
 * numerator or denominator gets larger than an integer after performing an operation.
 * The Fraction can be added to another Fraction or subtracted from another Fraction. 
 * A multiply operation is multiplies Fractions together. 
@@ -16,20 +16,20 @@ public class Fraction implements Comparable<Fraction> {
   public static final Fraction ONE_HALF = Fraction.valueOf(1,2);
   public static final Fraction ONE_QUARTER = Fraction.valueOf(1,4);
   public static final Fraction ONE_THIRD = Fraction.valueOf(1,3);
-  private long numerator;
-  private long denominator;
+  private final long numerator;
+  private final long denominator;
   
   /**
-  * The constructor creates the Fraction object and initializes the num and denom instance fields. 
+  * The constructor creates the Fraction object and initializes the numerator and denominator instance fields. 
   * The constructor is private and can only be instantiated through the static factory method valueOf. 
-  * Arithmetic operations require that the size of the Fraction passed as an arguments to its methods have thier
-  * parts (num and denom be the size of an int primitive) but the constructor and static factory can take a num
-  * and denom that are the size of a long primitive.
-  * Precondition:  denominator != 0
-  * Postcondition: denominator != 0
-  * @param long numerator of fraction
-  * @param long denominator of fraction
-  * @throws IllegalArgumentException
+  * Arithmetic operations require that the size of the Fraction passed as an arguments to its methods have their
+  * parts (numerator and denominator be the size of an int primitive) but the constructor and static factory can take a numerator
+  * and denominator that are the size of a long primitive.
+  * Pre-condition:  denominator != 0
+  * Post-condition: denominator != 0
+  * @param numerator of fraction
+  * @param denominator of fraction
+  * @throws UndefinedFractionException when denominator equals zero
   */
     private Fraction(long numerator, long denominator) throws UndefinedFractionException {    
       if(denominator != 0) {
@@ -40,8 +40,7 @@ public class Fraction implements Comparable<Fraction> {
       else {
         throw new UndefinedFractionException("Fraction " + this + " is a undefined fraction");
       }
-      // check postcondition
-      assert(this.denominator != 0);
+      // check post-condition
     }
 
   public long getNumerator() {
@@ -55,26 +54,25 @@ public class Fraction implements Comparable<Fraction> {
   /**
   * The valueOf static factory method creates a Fraction with the values for the 
   * fraction's numerator and denominator. 
-  * precondition:  The calling code provides two integer as parameters (num, denom), denom !=0 
-  * postcondition: A new Fraction is returned from to the calling statement that is of the form 
-  * numerator equals num and denominator equals denom
-  * @param int the numerator of the fraction
-  * @param int denominator of the fraction 
+  * Pre-condition:  The calling code provides two integer as parameters (numerator, denominator), denominator !=0 
+  * Post-condition: A new Fraction is returned from to the calling statement that is of the form 
+  * numerator equals numerator and denominator equals denominator
+  * @param numerator of the fraction
+  * @param denominator of the fraction 
   * @return Fraction 
   */
-    public static Fraction valueOf(int num, int denom) throws UndefinedFractionException {
-      Fraction fraction = new Fraction(num, denom);
-      return fraction; 
+    public static Fraction valueOf(int numerator, int denominator) throws UndefinedFractionException {
+      return new Fraction(numerator, denominator); 
     }
   
   /**
   * Plus adds this Fraction to another fraction.
-  * precondition: addend != null && (-2^31 < this.num < 2^32  &&
-  * -2^31 < this.denom < 2^32)
-  * postcondition: (-2^<= 63 result.num <= 2^64) &&
-  * (-2^63 <= result.denom <= 2^64) && result.denom != 0 and the result is the sum of this 
+  * Pre-condition: addend != null && (-2^31 < this.numerator < 2^32  &&
+  * -2^31 < this.denominator < 2^32)
+  * Post-condition: (-2^<= 63 result.numerator <= 2^64) &&
+  * (-2^63 <= result.denominator <= 2^64) && result.denominator != 0 and the result is the sum of this 
   * fraction and the addend
-  * @param Fraction addend is the numeric operand to be added
+  * @param addend is the numeric operand to be added
   * @throws ArithmeticException if the result overflows a long value for either denominator or numerator
   * @return Fraction 
   */
@@ -96,29 +94,29 @@ public class Fraction implements Comparable<Fraction> {
 
   /** 
   * Minus subtracts another fraction from this fraction.  
-  * precondtion: subtranend != null && (-2^63 <= this.numerator <= 2^64 -1 && -2^*63 <=
+  * Pre-condition: subtrahend != null && (-2^63 <= this.numerator <= 2^64 -1 && -2^*63 <=
   * this.denominator <= 2^64) 
-  * postcondition: (-2^<= 63 result.numerator <= 2^64) && (-2^63 <= result.denominator <=
-  * 2^64) && result.denom != 0 and the result is the difference between this fraction and subtranend
-  * @param Fraction the operand of the minus operation
+  * Post-condition: (-2^<= 63 result.numerator <= 2^64) && (-2^63 <= result.denominator <=
+  * 2^64) && result.denominator != 0 and the result is the difference between this fraction and subtrahend
+  * @param subtrahend of the minus operation
   * @throws ArithmeticException if the numerator or denominator of the difference is greater than the  
   * long value max size
-  * @return Fraction the difference between this and the subtranend
+  * @return Fraction the difference between this and the subtrahend
   */
-    public Fraction minus(Fraction subtranend) throws ArithmeticException {
-      Objects.requireNonNull(subtranend, "fraction must be non-null");
+    public Fraction minus(Fraction subtrahend) throws ArithmeticException {
+      Objects.requireNonNull(subtrahend, "fraction must be non-null");
         
-       return this.plus(subtranend.times(new Fraction(-1,1)));
+       return this.plus(subtrahend.times(new Fraction(-1,1)));
     }
     
   /**
   * Finds the identity Fraction of a number.
-  * precondition: The calling method provides a number, that is a long
-  * postcondition: The method returns a fraction that if multiplied by another Fraction would be 
+  * Pre-condition: The calling method provides a number, that is a long
+  * Post-condition: The method returns a fraction that if multiplied by another Fraction would be 
   * simplified into 
   * the original fraction
-  * @param long aNumber
-  * @return Fraction identity
+  * @param aNumber that is used as the multiple of the identity fraction
+  * @return fraction identity
   */
   private static Fraction identity(long aNumber) {
     Fraction identity = new Fraction(aNumber, aNumber);
@@ -136,11 +134,11 @@ public class Fraction implements Comparable<Fraction> {
   /**
   * This Fraction multiplies itself to another fraction when this method is
   * called with a non null fraction otherwise a NullPointerException is thrown.
-  * precondition: fraction != null && operand != null && (-2^31 <= this.num <= 2^31
-  * -1 *&& -2^*31 <= this.denom <= 2^31 -1)
-  * postcondition: (-2^<= 63 result.num <= 2^63 -1) && (-2^63 <= result.denom <=
-  * 2^63 *-1) && result.denom != 0
-  * @param Fraction operand to be multiplied by this fraction
+  * Pre-condition: fraction != null && operand != null && (-2^31 <= this.numerator <= 2^31
+  * -1 *&& -2^*31 <= this.denominator <= 2^31 -1)
+  * Post-condition: (-2^<= 63 result.numerator <= 2^63 -1) && (-2^63 <= result.denominator <=
+  * 2^63 *-1) && result.denominator != 0
+  * @param  operand to be multiplied by this fraction
   * @throws ArithmeticException if the result overflows a long value for either denominator or numerator
   * @return Fraction the product of it and its operand
   */
@@ -153,15 +151,15 @@ public class Fraction implements Comparable<Fraction> {
     
   /**
   * Compares a Fraction with another Fraction checking whether they are equal Fractions
-  * @param Fraction other
+  * @param other fraction used in comparison
   * @return int 0 if true and 1 if false
   */
     @Override
     public int compareTo(Fraction other){
       long numerator = other.getNumerator();
       long denominator = other.getDenominator();
-      return (Long.compare(this.numerator, numerator) == 0 &&
-      Long.compare(this.denominator, denominator) == 0) ? 0 : 1;
+      return (this.numerator == numerator &&
+              this.denominator == denominator) ? 0 : 1;
     }
     
   /**
