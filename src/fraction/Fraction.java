@@ -40,7 +40,6 @@ public class Fraction implements Comparable<Fraction> {
       else {
         throw new UndefinedFractionException("Fraction " + this + " is a undefined fraction");
       }
-      // check post-condition
     }
 
   public long getNumerator() {
@@ -61,7 +60,7 @@ public class Fraction implements Comparable<Fraction> {
   * @param denominator of the fraction 
   * @return Fraction 
   */
-    public static Fraction valueOf(int numerator, int denominator) throws UndefinedFractionException {
+    public static Fraction newInstance(int numerator, int denominator) throws UndefinedFractionException {
       return new Fraction(numerator, denominator); 
     }
   
