@@ -1,6 +1,10 @@
 package fraction;
 
+import fraction.Denominator;
+import fraction.Numerator;
+
 import java.util.Objects;
+
 import static fraction.FractionPartsUtil.lowestCommonMultiple;
 
 /**
@@ -12,10 +16,10 @@ import static fraction.FractionPartsUtil.lowestCommonMultiple;
 */
 
 public class Fraction implements Comparable<Fraction> {
-  public static final Fraction ONE = Fraction.valueOf(1,1);
-  public static final Fraction ONE_HALF = Fraction.valueOf(1,2);
-  public static final Fraction ONE_QUARTER = Fraction.valueOf(1,4);
-  public static final Fraction ONE_THIRD = Fraction.valueOf(1,3);
+  public static final Fraction ONE = Fraction.valueOf(Numerator.ONE, Denominator.ONE);
+  public static final Fraction ONE_HALF = Fraction.valueOf(Numerator.ONE, Denominator.TWO);
+  public static final Fraction ONE_THIRD = Fraction.valueOf(Numerator.ONE, Denominator.THREE);
+  public static final Fraction ONE_QUARTER = Fraction.valueOf(Numerator.ONE, Denominator.FOUR);
   private final long numerator;
   private final long denominator;
   
@@ -46,7 +50,8 @@ public class Fraction implements Comparable<Fraction> {
     return this.numerator;
   }
   
-  public long getDenominator() {
+  public long getDenominator() 
+
     return this.denominator;
   }
 
