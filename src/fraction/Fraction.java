@@ -16,10 +16,10 @@ import static fraction.FractionPartsUtil.lowestCommonMultiple;
 */
 
 public class Fraction implements Comparable<Fraction> {
-  public static final Fraction ONE = Fraction.valueOf(Numerator.ONE, Denominator.ONE);
-  public static final Fraction ONE_HALF = Fraction.valueOf(Numerator.ONE, Denominator.TWO);
-  public static final Fraction ONE_THIRD = Fraction.valueOf(Numerator.ONE, Denominator.THREE);
-  public static final Fraction ONE_QUARTER = Fraction.valueOf(Numerator.ONE, Denominator.FOUR);
+  public static final Fraction ONE = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "ONE").symbol);
+  public static final Fraction ONE_HALF = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "TWO").symbol);
+  public static final Fraction ONE_THIRD = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "THREE").symbol);
+  public static final Fraction ONE_QUARTER = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "FOUR").symbol);
   private final long numerator;
   private final long denominator;
   
@@ -50,8 +50,7 @@ public class Fraction implements Comparable<Fraction> {
     return this.numerator;
   }
   
-  public long getDenominator() 
-
+  public long getDenominator() {
     return this.denominator;
   }
 
@@ -153,17 +152,18 @@ public class Fraction implements Comparable<Fraction> {
      return product;
     }  
     
-    /**
-    *This Fraction is divided by a divisor by calling this method divide. 
-    *pre-condition: Fraction divisor is non - null.
-    *post-condition: The result is a fraction
-    *@param divisor
-    *@throws ArithematicException if the result is overflow the size of a
-    *long 
-    *@return
-    */
+  /**
+  * Divide 
+  by a divisor by calling this method divide. 
+  * pre-condition: Fraction divisor is non - null.
+  * post-condition: The result is a fraction
+  * @param divisor
+  * @throws ArithematicException if the result is overflow the size ofa long 
+  * @return qoutient of two fractions
+  */
     public Fraction divide(Fraction divisor) {
-      return new Fraction(FractionPartsUtil.multipy(this.getNumerator(), divisor.getDenominator()), FractionPartsUtil.multiply(this.getDenominator(), divisor.getNumerator());
+    Objects.requireNonNull(divisor, "Non-null fraction of this is on correct");
+      return new Fraction(FractionPartsUtil.multiply(this.getNumerator(), divisor.getDenominator()), FractionPartsUtil.multiply(this.getDenominator(), divisor.getNumerator()));
     }
   /**
   * Compares a Fraction with another Fraction checking whether they are equal Fractions
