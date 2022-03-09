@@ -86,7 +86,7 @@ public class Fraction implements Comparable<Fraction> {
       System.out.println(lcm);
       Fraction result;
       if (denominator == addend.getDenominator()) {
-        long sum  = FractionPartsUtil.add(numerator, addend.getNumerator());
+        long sum  = FractionPartsUtil.add(this.numerator, addend.getNumerator());
         result = new Fraction(sum, denominator);
       }
       else {
@@ -153,6 +153,18 @@ public class Fraction implements Comparable<Fraction> {
      return product;
     }  
     
+    /**
+    *This Fraction is divided by a divisor by calling this method divide. 
+    *pre-condition: Fraction divisor is non - null.
+    *post-condition: The result is a fraction
+    *@param divisor
+    *@throws ArithematicException if the result is overflow the size of a
+    *long 
+    *@return
+    */
+    public Fraction divide(Fraction divisor) {
+      return new Fraction(FractionPartsUtil.multipy(this.getNumerator(), divisor.getDenominator()), FractionPartsUtil.multiply(this.getDenominator(), divisor.getNumerator());
+    }
   /**
   * Compares a Fraction with another Fraction checking whether they are equal Fractions
   * @param other fraction used in comparison
