@@ -6,11 +6,11 @@ public class FractionPartsUtil {
         throw new AssertionError();
     }
     
-    public static long lowestCommonMultiple(long a, long b) {
-        return Math.abs(a * b) / highestCommonFactor(a, b);
+    public static long findLowestCommonMultiple(long a, long b) {
+        return Math.abs(a * b) / findHighestCommonFactor(a, b);
     } 
 
-    public static long highestCommonFactor(long a, long b) {
+    public static long findHighestCommonFactor(long a, long b) {
         while(b !=0) {
             long r = b;
             b = mod(a, b);

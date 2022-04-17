@@ -5,27 +5,39 @@ import fraction.Numerator;
 
 import java.util.Objects;
 
-import static fraction.FractionPartsUtil.lowestCommonMultiple;
+import static fraction.FractionPartsUtil.findLowestCommonMultiple;
 
 /**
-* Fraction class is an ADT that holds two values a numerator and a denominator.
-* Fraction can throw an IllegalArgumentException when the denominator is zero or if either the 
-* numerator or denominator gets larger than an integer after performing an operation.
-* The Fraction can be added to another Fraction or subtracted from another Fraction. 
-* A multiply operation is multiplies Fractions together. 
+* The Fraction type can plus, minus, times and divide itself by another Fraction 
+* but must be given values for its numerator and a denominator that are 
+* type int and if the denominator is zero it throws a
+* UndefineFractionException. Also, if either the numerator or denominator 
+* gets larger than a long after performing an operation, or the results 
+* of the operation causes the number to exceeds the range of a BigDecimal
+* an ArithmeticException is thrown. The class includes four common
+* fractions as constants representing:
+* <ul>
+*  <li>One in the fraction form</li>
+*  <li>One half in the fraction form</li>
+*  <li>One third in the fraction form</li>
+*  <li>One forth in the fraction form</li>
+* </ul>
+* @author Calvin Francis
+* @version %I%, %G%
+* @since 1.0
 */
 
 public class Fraction implements Comparable<Fraction> {
-  public static final Fraction ONE = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "ONE").symbol);
-  public static final Fraction ONE_HALF = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "TWO").symbol);
-  public static final Fraction ONE_THIRD = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "THREE").symbol);
-  public static final Fraction ONE_QUARTER = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").symbol, Enum.valueOf(Denominator.class, "FOUR").symbol);
+  public static final Fraction ONE = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").value, Enum.valueOf(Denominator.class, "ONE").value);
+  public static final Fraction ONE_HALF = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").value, Enum.valueOf(Denominator.class, "TWO").value);
+  public static final Fraction ONE_THIRD = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").value, Enum.valueOf(Denominator.class, "THREE").value);
+  public static final Fraction ONE_QUARTER = Fraction.newInstance(Enum.valueOf(Numerator.class, "ONE").value, Enum.valueOf(Denominator.class, "FOUR").value);
   private final long numerator;
   private final long denominator;
   
   /**
   * The constructor creates the Fraction object and initializes the numerator and denominator instance fields. 
-  * The constructor is private and can only be instantiated through the static factory method valueOf. 
+  * The constructor is private and can only be instantiated through the static factory method newInstance. 
   * Arithmetic operations require that the size of the Fraction passed as an arguments to its methods have their
   * parts (numerator and denominator be the size of an int primitive) but the constructor and static factory can take a numerator
   * and denominator that are the size of a long primitive.
@@ -39,10 +51,10 @@ public class Fraction implements Comparable<Fraction> {
       if(denominator != 0) {
       // initialize variables in the constructor
         this.numerator = numerator;
-        this.denominator =  denominator;
+        this.denominator = denominator;
       }
       else {
-        throw new UndefinedFractionException("Fraction " + this + " is a undefined fraction");
+        throw new UndefinedFractionException("Fraction: " + this + " is a undefined fraction");
       }
     }
 
@@ -55,15 +67,18 @@ public class Fraction implements Comparable<Fraction> {
   }
 
   /**
-  * The valueOf static factory method creates a Fraction with the values for the 
-  * fraction's numerator and denominator. 
-  * Pre-condition:  The calling code provides two integer as parameters (numerator, denominator), denominator !=0 
-  * Post-condition: A new Fraction is returned from to the calling statement that is of the form 
-  * numerator equals numerator and denominator equals denominator
+  * The newInstance static factory method creates a new Fraction with the
+  * values for the fraction's numerator and denominator. 
+  * Pre-condition:  The calling code provides two integer as parameters
+  * (numerator, denominator), denominator !=0 
+  * Post-condition: A new Fraction is returned from to the calling
+  * statement that is of the form numerator equals numerator and
+  * denominator equals denominator
   * @param numerator of the fraction
   * @param denominator of the fraction 
-  * @return Fraction 
-  */
+  * @return a new Fraction consisting of numerator as numerator
+  * and denominator as denominator.
+ */
     public static Fraction newInstance(int numerator, int denominator) throws UndefinedFractionException {
       return new Fraction(numerator, denominator); 
     }
@@ -81,12 +96,11 @@ public class Fraction implements Comparable<Fraction> {
   */
     public Fraction plus(Fraction addend) throws ArithmeticException {
       Objects.requireNonNull(addend, "This fraction cannot be added to a null Fraction");
-      long lcm = lowestCommonMultiple(this.getDenominator(), addend.getDenominator());
-      System.out.println(lcm);
+      long lcm = findLowestCommonMultiple(this.getDenominator(), addend.getDenominator());
       Fraction result;
-      if (denominator == addend.getDenominator()) {
-        long sum  = FractionPartsUtil.add(this.numerator, addend.getNumerator());
-        result = new Fraction(sum, denominator);
+      if (this.getDenominator() == addend.getDenominator()) {
+        long sumOfNumerators = FractionPartsUtil.add(this.numerator, addend.getNumerator());
+        result = new Fraction(sumOfNumerators, this.getDenominator());
       }
       else {
         result = this.times(identity(lcm/this.getDenominator()))
@@ -101,7 +115,7 @@ public class Fraction implements Comparable<Fraction> {
   * this.denominator <= 2^64) 
   * Post-condition: (-2^<= 63 result.numerator <= 2^64) && (-2^63 <= result.denominator <=
   * 2^64) && result.denominator != 0 and the result is the difference between this fraction and subtrahend
-  * @param subtrahend of the minus operation
+  * @param subtrahend is a numeric operand to be subtracted 
   * @throws ArithmeticException if the numerator or denominator of the difference is greater than the  
   * long value max size
   * @return Fraction the difference between this and the subtrahend
@@ -113,24 +127,27 @@ public class Fraction implements Comparable<Fraction> {
     }
     
   /**
-  * Finds the identity Fraction of a number.
+  * Finds the multiplication identity property of a
+  * number in the form of a fraction
   * Pre-condition: The calling method provides a number, that is a long
   * Post-condition: The method returns a fraction that if multiplied by another Fraction would be 
   * simplified into 
   * the original fraction
-  * @param aNumber that is used as the multiple of the identity fraction
-  * @return fraction identity
+  * @param a number that is used as the multiple for the identity fraction
+  * @return a multiplication identity fraction
   */
-  private static Fraction identity(long aNumber) {
-    Fraction identity = new Fraction(aNumber, aNumber);
+  private static Fraction identity(long multipleOfIdentityFraction) {
+    Fraction identity = new Fraction(multipleOfIdentityFraction, multipleOfIdentityFraction);
     return identity;
   }
   
   /**
+  * Simplifies this fraction to its most simplest form.
+  * @return a fraction that is in its simplest form.
   *
   */
   public Fraction simplify() {
-     long hcf = FractionPartsUtil.highestCommonFactor(numerator, denominator);
+     long hcf = FractionPartsUtil.findHighestCommonFactor(numerator, denominator);
      return new Fraction(this.getNumerator()/hcf, this.getDenominator()/hcf);
   }
     
