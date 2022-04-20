@@ -1,4 +1,4 @@
-package fraction;
+package com.whiteboard.number.fraction;
 
 class UndefinedFractionException extends IllegalArgumentException{
  public UndefinedFractionException() {}

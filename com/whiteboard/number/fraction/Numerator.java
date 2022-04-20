@@ -1,4 +1,4 @@
-package fraction;
+package com.whiteboard.number.fraction;
 
 public enum Numerator {
     ONE(1);
