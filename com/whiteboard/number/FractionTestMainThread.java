@@ -13,5 +13,6 @@ public class FractionTestMainThread {
   }
 
   public class Display {
+    
   }
 }
