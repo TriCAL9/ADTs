@@ -11,4 +11,7 @@ public class FractionTestMainThread {
     System.out.println("Approximated area: " + areaInsideCircle.getNumerator() 
                        / areaInsideCircle.getDenominator());
   }
+
+  public class Display {
+  }
 }
