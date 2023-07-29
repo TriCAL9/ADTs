@@ -1,11 +1,8 @@
 package com.whiteboard.number.fraction;
 
-import fraction.Denominator;
-import fraction.Numerator;
-
 import java.util.Objects;
 
-import static fraction.FractionPartsUtil.findLowestCommonMultiple;
+import static com.whiteboard.number.fraction.FractionPartsUtil.findLowestCommonMultiple;
 
 /**
 * The Fraction type can plus, minus, times and divide itself by another Fraction 
