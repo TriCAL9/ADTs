@@ -3,7 +3,7 @@ package com.whiteboard.number.fraction;
 import java.util.Objects;
 
 import static com.whiteboard.number.fraction.FractionPartsUtil.findLowestCommonMultiple;
-
+import static com.whiteboard.number.fraction.FractionPartsUtil.multiply;
 /**
 * The Fraction type can plus, minus, times and divide itself by another Fraction 
 * but must be given values for its numerator and a denominator that are 
@@ -126,9 +126,10 @@ public class Fraction implements Comparable<Fraction> {
          subtrahendResult = new Fraction(differenceOfNumerators, this.denominator);
        } 
        else {
-        subtrahendResult = new Fraction(1,1);
+        subtrahendResult = new Fraction(FractionPartsUtil.subtract(multiply(numerator, lcm/this.denominator)
+        , multiply(subtrahend.getNumerator(), lcm/subtrahend.getDenominator())), multiply(lcm, this.denominator));
        }
-       return this.plus(subtrahend.times(new Fraction(-1,1)));
+       return subtrahendResult;
     }
     
   /**
