@@ -94,16 +94,16 @@ public class Fraction implements Comparable<Fraction> {
     public Fraction plus(Fraction addend) throws ArithmeticException {
       Objects.requireNonNull(addend, "This fraction cannot be added to a null Fraction");
       long lcm = findLowestCommonMultiple(this.getDenominator(), addend.getDenominator());
-      Fraction result;
+      Fraction sumResult;
       if (this.getDenominator() == addend.getDenominator()) {
         long sumOfNumerators = FractionPartsUtil.add(this.numerator, addend.getNumerator());
-        result = new Fraction(sumOfNumerators, this.getDenominator());
+        sumResult = new Fraction(sumOfNumerators, this.getDenominator());
       }
       else {
-        result = this.times(identity(lcm/this.getDenominator()))
-          .plus(addend.times(identity(lcm/addend.getDenominator())));
+        sumResult = new Fraction(FractionPartsUtil.add(multiply(this.numerator, lcm/this.getDenominator())
+          , multiply(addend.getNumerator(),lcm/addend.getDenominator())), lcm);
       }
-      return result;
+      return sumResult;
     }
 
   /** 
