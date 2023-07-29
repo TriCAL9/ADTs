@@ -119,7 +119,7 @@ public class Fraction implements Comparable<Fraction> {
   */
     public Fraction minus(Fraction subtrahend) throws ArithmeticException {
       Objects.requireNonNull(subtrahend, "fraction must be non-null");
-        
+       long lcm = findLowestCommonMultiple(this.numerator, subtrahend.getNumerator());
        return this.plus(subtrahend.times(new Fraction(-1,1)));
     }
     
