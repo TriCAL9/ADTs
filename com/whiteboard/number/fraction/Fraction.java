@@ -125,6 +125,9 @@ public class Fraction implements Comparable<Fraction> {
          long differenceOfNumerators = FractionPartsUtil.subtract(this.numerator, subtrahend.getNumerator());
          subtrahendResult = new Fraction(differenceOfNumerators, this.denominator);
        } 
+       else {
+        subtrahendResult = new Fraction(1,1);
+       }
        return this.plus(subtrahend.times(new Fraction(-1,1)));
     }
     
