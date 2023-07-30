@@ -142,7 +142,7 @@ public class Fraction implements Comparable<Fraction> {
   * @param a number that is used as the multiple for the identity fraction
   * @return a multiplication identity fraction
   */
-  private static Fraction identity(long multipleOfIdentityFraction) {
+  public static Fraction identity(long multipleOfIdentityFraction) {
     Fraction identity = new Fraction(multipleOfIdentityFraction, multipleOfIdentityFraction);
     return identity;
   }
