@@ -120,7 +120,7 @@ public class Fraction implements Comparable<Fraction> {
     public Fraction minus(Fraction subtrahend) throws ArithmeticException {
       Objects.requireNonNull(subtrahend, "fraction must be non-null");
       Fraction subtrahendResult;
-      long lcm = findLowestCommonMultiple(this.numerator, subtrahend.getNumerator());
+      long lcm = findLowestCommonMultiple(this.denominator, subtrahend.getDenominator());
        if(this.denominator == subtrahend.getDenominator()) {
          long differenceOfNumerators = FractionPartsUtil.subtract(this.numerator, subtrahend.getNumerator());
          subtrahendResult = new Fraction(differenceOfNumerators, this.denominator);
@@ -139,6 +139,7 @@ public class Fraction implements Comparable<Fraction> {
   * Post-condition: The method returns a fraction that if multiplied by another Fraction would be 
   * simplified into 
   * the original fraction
+  * @deprecated soon will be moved to Utility Class
   * @param a number that is used as the multiple for the identity fraction
   * @return a multiplication identity fraction
   */
