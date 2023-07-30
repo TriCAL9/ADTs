@@ -127,7 +127,7 @@ public class Fraction implements Comparable<Fraction> {
        } 
        else {
         subtrahendResult = new Fraction(FractionPartsUtil.subtract(multiply(numerator, lcm/this.denominator)
-        , multiply(subtrahend.getNumerator(), lcm/subtrahend.getDenominator())), multiply(lcm, this.denominator));
+        , multiply(subtrahend.getNumerator(), lcm/subtrahend.getDenominator())), lcm);
        }
        return subtrahendResult;
     }
